@@ -19,6 +19,56 @@ def register():
     db.session.commit()
     return jsonify({"message": "User created!"}), 201
 
+
+@user.route('/update', methods=['PUT'])
+def update_user():
+    data = request.json
+    user = User.query.filter_by(email=data['email']).first()
+    
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    # Here, you can update any fields you want. For example, updating the name:
+    if 'code' in data:
+        user.code = data['code']
+        timestamp = datetime.datetime.now()
+        user.timestamp = timestamp
+
+    db.session.commit()
+    
+    return jsonify({"message": "User updated successfully!"}), 200
+
+
+@user.route('/update_pass', methods=['PUT'])
+def update_pass():
+    data = request.json
+    user = User.query.filter_by(email=data['email']).first()
+    
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    # Here, you can update any fields you want. For example, updating the name:
+    
+    if 'code' in data:
+        if user.code == data['code']:
+            # Update password if it's provided in the data
+            timestamp = datetime.datetime.now()
+            if timestamp < result.user + timedelta(days=10):
+                if 'password' in data:
+                    user.set_password(data['password'])
+                    user.code = ''
+                    db.session.commit()
+            else:
+                return jsonify({"message": "Code expired"}), 404
+        else:
+            return jsonify({"message": "Invalid code"}), 404
+    else:
+        return jsonify({"message": "Code not sent"}), 404
+  
+    
+    return jsonify({"message": "User updated successfully!"}), 200
+
+
 @user.route('/token/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():

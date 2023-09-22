@@ -1,6 +1,7 @@
 from src import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import ForeignKey, Boolean
+import datetime
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -9,13 +10,15 @@ class User(db.Model):
     fullname = db.Column(db.String(80), unique=False, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     code = db.Column(db.String(40), unique=False)
+    timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow(),  nullable=True)
 
     def to_json(self):
         return {
             "id":self.id,
             "email":self.email,
             "fullname":self.fullname,
-            "code":self.code
+            "code":self.code,
+            "timestamp":self.timestamp
         }
 
     def __repr__(self):
