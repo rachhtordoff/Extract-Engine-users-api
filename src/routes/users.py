@@ -79,10 +79,10 @@ def refresh():
 @user.route('/login', methods=['POST'])
 def login():
     data = request.json
-
+    print(data)
     user = User.query.filter_by(email=data['email']).first()
     if user and user.check_password(data['password']):
-
+        print('yes')
         token = create_access_token(identity=user.email, expires_delta=timedelta(days=30))
         refresh_token = create_refresh_token(identity=user.email, expires_delta=timedelta(days=365))
 
