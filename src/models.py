@@ -37,3 +37,14 @@ class Extractions(db.Model):
     file_Type = db.Column(db.String(60))
     extraction_type = db.Column(db.String(60))
     extracted_Data = db.Column(db.String())
+    output_document_name = db.Column(db.String())
+
+    def to_json(self):
+        return {
+            "id":self.id,
+            "user_id":self.user_id,
+            "file_Type":self.file_Type,
+            "extraction_type":self.extraction_type,
+            "extracted_Data":self.extracted_Data,
+            "output_document_name":self.output_document_name
+        }

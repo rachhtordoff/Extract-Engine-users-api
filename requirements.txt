@@ -7,3 +7,5 @@ Flask-JWT-Extended
 flask_script
 Flask-Script==2.0.5
 Flask-WhooshAlchemy==0.56
+boto3
+botocore
