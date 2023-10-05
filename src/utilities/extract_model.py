@@ -1,6 +1,7 @@
 # extraction_model.py
 from src.models import db, Extractions
 
+
 class ExtractionModel:
     @staticmethod
     def update_extraction(id, document_name):

@@ -2,10 +2,10 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from src.utilities.user_service import UserService
 from src.utilities.token_service import TokenService
-from src.exceptions import ApplicationError
 from flask_jwt_extended import get_jwt_identity
 
 user = Blueprint('users', __name__)
+
 
 @user.route('/register', methods=['POST'])
 def register():
@@ -26,6 +26,7 @@ def update_user():
     except ValueError as e:
         return jsonify({"message": str(e)}), 404
 
+
 @user.route('/update_pass', methods=['PUT'])
 def update_pass():
     data = request.json
@@ -35,12 +36,14 @@ def update_pass():
     except ValueError as e:
         return jsonify({"message": str(e)}), 404
 
+
 @user.route('/token/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
     current_user = get_jwt_identity()
     access_token = TokenService.create_tokens(current_user)[0]
     return jsonify(access_token=access_token), 200
+
 
 @user.route('/login', methods=['POST'])
 def login():
@@ -51,12 +54,13 @@ def login():
         return jsonify(
             access_token=access_token,
             refresh_token=refresh_token,
-            user_id=user.id, 
-            name=user.fullname, 
+            user_id=user.id,
+            name=user.fullname,
             email=user.email
         ), 200
     except ValueError as e:
         return jsonify({"message": str(e)}), 401
+
 
 @user.route('/protected', methods=['GET'])
 @jwt_required()

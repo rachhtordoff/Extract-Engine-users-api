@@ -9,3 +9,9 @@ Flask-Script==2.0.5
 Flask-WhooshAlchemy==0.56
 boto3
 botocore
+Flask-Testing
+flake8
+blinker
+pytest==7.4.2
+pytest-cov
+Werkzeug==2.3.7

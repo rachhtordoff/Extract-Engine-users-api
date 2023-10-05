@@ -1,6 +1,6 @@
 from src.models import User, db
 from datetime import datetime, timedelta
-from werkzeug.security import generate_password_hash, check_password_hash
+
 
 class UserService:
     @staticmethod

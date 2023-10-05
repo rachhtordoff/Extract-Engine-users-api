@@ -9,6 +9,10 @@ class Config:
     DEVELOPMENT = os.environ['DEVELOPMENT']
     DEBUG = os.environ['DEBUG']
     JWT_SECRET_KEY = os.environ['JWT_SECRET_KEY']
+    aws_access_key_id = os.environ['aws_access_key_id']
+    aws_secret_access_key = os.environ['aws_secret_access_key']
+    BUCKET_NAME = os.environ['BUCKET_NAME']
+    BUCKET_ID = os.environ['BUCKET_ID']
 
     SQLALCHEMY_USER = os.environ['POSTGRES_USER']
     SQLALCHEMY_PASSWORD = os.environ['POSTGRES_PASSWORD']

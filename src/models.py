@@ -1,7 +1,8 @@
 from src import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import ForeignKey, Boolean
+from sqlalchemy import ForeignKey
 import datetime
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -10,15 +11,15 @@ class User(db.Model):
     fullname = db.Column(db.String(80), unique=False, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     code = db.Column(db.String(40), unique=False)
-    timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow(),  nullable=True)
+    timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow(), nullable=True)
 
     def to_json(self):
         return {
-            "id":self.id,
-            "email":self.email,
-            "fullname":self.fullname,
-            "code":self.code,
-            "timestamp":self.timestamp
+            "id": self.id,
+            "email": self.email,
+            "fullname": self.fullname,
+            "code": self.code,
+            "timestamp": self.timestamp
         }
 
     def __repr__(self):
@@ -29,6 +30,7 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
 
 class Extractions(db.Model):
     __tablename__ = 'userextractions'
@@ -41,10 +43,10 @@ class Extractions(db.Model):
 
     def to_json(self):
         return {
-            "id":self.id,
-            "user_id":self.user_id,
-            "file_Type":self.file_Type,
-            "extraction_type":self.extraction_type,
-            "extracted_Data":self.extracted_Data,
-            "output_document_name":self.output_document_name
+            "id": self.id,
+            "user_id": self.user_id,
+            "file_Type": self.file_Type,
+            "extraction_type": self.extraction_type,
+            "extracted_Data": self.extracted_Data,
+            "output_document_name": self.output_document_name
         }
