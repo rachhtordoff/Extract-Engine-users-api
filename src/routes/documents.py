@@ -25,12 +25,47 @@ def new_bucket(folder_id):
 @documents.route("/post_document/<folder_id>", methods=['POST'])
 @jwt_required()
 def new_document(folder_id):
-    data = request.files
+    file_data = request.files
     try:
-        aws_service.post_document(folder_id, data)
-        ExtractionModel.update_extraction(folder_id, request.json)
+        aws_service.post_document(folder_id, file_data)
 
-    except Exception:
-        raise ApplicationError("something has gone wrong with uploading documents", 'unspecified')
+    except Exception as e:
+        raise ApplicationError(f"something has gone wrong with uploading documents {e}", 'unspecified')
 
-    return 'done'
+    return {'status': 'done'}
+
+
+@documents.route("/update_extraction/<folder_id>", methods=['POST'])
+@jwt_required()
+def update_extraction(folder_id):
+    data = request.json
+    try:
+        ExtractionModel.update_extraction(folder_id, data)
+
+    except Exception as e:
+        raise ApplicationError(f"something has gone wrong with uploading documents {e}", 'unspecified')
+
+    return {'status': 'done'}
+
+
+@documents.route("/get_documents/<folder_id>", methods=['POST'])
+def get_documents(folder_id):
+    json_data = request.json
+
+    try:
+        # Ensure the request has JSON data
+        if not json_data.is_json:
+            return jsonify({"error": "Missing JSON data"}), 400
+        
+        doc_names = json_data.get('doc_names', [])
+        
+        # Ensure doc_names is a list
+        if not isinstance(doc_names, list):
+            return jsonify({"error": "doc_names should be a list"}), 400
+        
+        url_list = aws_service.get_documents(folder_id, doc_names)
+        
+        return jsonify({"urls": url_list})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

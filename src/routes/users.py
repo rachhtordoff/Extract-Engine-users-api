@@ -74,6 +74,17 @@ def login():
         return jsonify({"message": str(e)}), 401
 
 
+@user.route('/get_document_list/<folder_id>', methods=['POST'])
+def get_document_list(folder_id):
+    results = UserService.get_document_names(folder_id)
+    
+    document_list = []
+    for result in results:
+        document_list.append(result[1])
+
+    return jsonify(document_list)
+
+
 @user.route('/protected', methods=['GET'])
 @jwt_required()
 def protected_route():

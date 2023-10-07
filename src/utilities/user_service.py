@@ -23,6 +23,11 @@ class UserService:
         db.session.commit()
 
     @staticmethod
+    def get_document_names(folder_id):
+        variable= Sql.session.query(User.output_document_name).filter(User.user_id==folder_id).all()
+        return variable
+
+    @staticmethod
     def update_user_password(email, code, new_password):
         user = User.query.filter_by(email=email).first()
         if not user or user.code != code or datetime.now() > user.timestamp + timedelta(days=10):
