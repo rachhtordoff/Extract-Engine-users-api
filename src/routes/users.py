@@ -66,3 +66,13 @@ def login():
 @jwt_required()
 def protected_route():
     return jsonify({"message": "This is a protected route!"})
+
+
+@user.route('/new_extract', methods=['POST'])
+def new_extract():
+    data = request.json
+    try:
+        get_extract = ExtractService.create_extract(data)
+        return jsonify(get_extract)
+    except ValueError as e:
+        return jsonify({"message": str(e)}), 400

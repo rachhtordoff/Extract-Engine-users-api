@@ -1,4 +1,4 @@
-from src.models import User, db
+from src.models import User, db, Extractions
 from datetime import datetime, timedelta
 
 
@@ -37,3 +37,16 @@ class UserService:
         if not user or not user.check_password(password):
             raise ValueError("Invalid credentials")
         return user
+
+
+class ExtractService:
+    @staticmethod
+    def create_extract(data):
+        new_user = Extractions(**data)
+        db.session.add(new_user)
+        db.session.commit()
+        return ExtractService.get_extract(new_user.to_dict())
+
+    def get_extract(params):
+        variable= Sql.session.query(Extractions).filter_by(**params).all()
+        return variable
