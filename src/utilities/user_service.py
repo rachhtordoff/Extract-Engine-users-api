@@ -38,15 +38,14 @@ class UserService:
             raise ValueError("Invalid credentials")
         return user
 
-
 class ExtractService:
     @staticmethod
     def create_extract(data):
         new_user = Extractions(**data)
         db.session.add(new_user)
         db.session.commit()
-        return ExtractService.get_extract(new_user.to_dict())
+        return ExtractService.get_extract(new_user.to_json())
 
     def get_extract(params):
-        variable= Sql.session.query(Extractions).filter_by(**params).all()
+        variable= db.session.query(Extractions).filter_by(**params).all()
         return variable

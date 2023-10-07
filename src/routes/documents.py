@@ -28,7 +28,7 @@ def new_document(folder_id):
     data = request.files
     try:
         aws_service.post_document(folder_id, data)
-        ExtractionModel.update_extraction(folder_id, list(data.keys())[0])  # Assuming only one file is uploaded at a time.
+        ExtractionModel.update_extraction(folder_id, request.json)
 
     except Exception:
         raise ApplicationError("something has gone wrong with uploading documents", 'unspecified')

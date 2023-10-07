@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from src.utilities.user_service import UserService
+from src.utilities.user_service import UserService, ExtractService
 from src.utilities.token_service import TokenService
 from flask_jwt_extended import get_jwt_identity
 
@@ -41,8 +41,20 @@ def update_pass():
 @jwt_required(refresh=True)
 def refresh():
     current_user = get_jwt_identity()
-    access_token = TokenService.create_tokens(current_user)[0]
-    return jsonify(access_token=access_token), 200
+    if not current_user:
+        return jsonify({"message": "Unable to extract user identity."}), 401
+    
+    try:
+        # Assuming create_tokens returns a tuple with the access token as the first element
+        new_access_token = TokenService.create_tokens(current_user)[0]
+        if not new_access_token:
+            raise ValueError("Failed to create a new token.")
+        return jsonify(access_token=new_access_token), 200
+    except ValueError as e:
+        return jsonify({"message": str(e)}), 401
+    except Exception as e:
+        # Catch other unexpected errors (use this wisely and try to have specific exceptions where possible)
+        return jsonify({"message": "An unexpected error occurred.", "details": str(e)}), 500
 
 
 @user.route('/login', methods=['POST'])
@@ -73,6 +85,17 @@ def new_extract():
     data = request.json
     try:
         get_extract = ExtractService.create_extract(data)
-        return jsonify(get_extract)
+        
+        # If get_extract is a list, convert each item to JSON serializable format.
+        if isinstance(get_extract, list):  
+            return jsonify([item.to_json() for item in get_extract])
+        
+        # If it's a single object, convert it to JSON serializable format.
+        return jsonify(get_extract.to_json())  
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
+    except AttributeError as e:
+        return jsonify({"message": "Attribute error occurred.", "details": str(e)}), 500
+    except Exception as e:
+        # Generic exception for unexpected errors (optional and use it wisely).
+        return jsonify({"message": "An unexpected error occurred.", "details": str(e)}), 500
