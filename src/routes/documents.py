@@ -54,10 +54,9 @@ def get_documents(folder_id):
 
     try:
         # Ensure the request has JSON data
-        if not json_data.is_json:
+        if not json_data:
             return jsonify({"error": "Missing JSON data"}), 400
-        
-        doc_names = json_data.get('doc_names', [])
+        doc_names = json_data
         
         # Ensure doc_names is a list
         if not isinstance(doc_names, list):

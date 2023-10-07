@@ -26,8 +26,8 @@ class AWSService:
         for doc_name in doc_names:
             url = self.client.generate_presigned_url('get_object',
                                                    Params={
-                                                       'Bucket': config.BUCKET_ID,
-                                                       'Key': f"{config.BUCKET_NAME}clients/{folder_id}/{doc_name}"
+                                                       'Bucket': config.Config.BUCKET_ID,
+                                                       'Key': f"{config.Config.BUCKET_NAME}clients/{folder_id}/{doc_name}"
                                                    },
                                                    ExpiresIn=3600)
             urls.append({doc_name: url})

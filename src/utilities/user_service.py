@@ -24,7 +24,7 @@ class UserService:
 
     @staticmethod
     def get_document_names(folder_id):
-        variable= Sql.session.query(User.output_document_name).filter(User.user_id==folder_id).all()
+        variable= db.session.query(Extractions.output_document_name).filter(Extractions.user_id==folder_id).all()
         return variable
 
     @staticmethod
