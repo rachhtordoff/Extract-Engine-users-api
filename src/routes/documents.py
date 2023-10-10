@@ -21,6 +21,18 @@ def new_bucket(folder_id):
 
     return 'done'
 
+@documents.route("/post_document_extract/<folder_id>", methods=['POST'])
+@jwt_required()
+def post_document_extract(folder_id):
+    file_data = request.files
+    try:
+        aws_service.post_document_extract(folder_id, file_data)
+
+    except Exception as e:
+        raise ApplicationError(f"something has gone wrong with uploading documents {e}", 'unspecified')
+
+    return {'status': 'done'}
+
 
 @documents.route("/post_document/<folder_id>", methods=['POST'])
 @jwt_required()
@@ -48,8 +60,8 @@ def update_extraction(folder_id):
     return {'status': 'done'}
 
 
-@documents.route("/get_documents/<folder_id>", methods=['POST'])
-def get_documents(folder_id):
+@documents.route("/get_documents", methods=['POST'])
+def get_documents():
     json_data = request.json
 
     try:
@@ -57,12 +69,11 @@ def get_documents(folder_id):
         if not json_data:
             return jsonify({"error": "Missing JSON data"}), 400
         doc_names = json_data
-        
         # Ensure doc_names is a list
         if not isinstance(doc_names, list):
             return jsonify({"error": "doc_names should be a list"}), 400
         
-        url_list = aws_service.get_documents(folder_id, doc_names)
+        url_list = aws_service.get_documents(doc_names)
         
         return jsonify({"urls": url_list})
     

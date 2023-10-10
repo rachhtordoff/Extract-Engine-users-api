@@ -80,7 +80,7 @@ def get_document_list(folder_id):
     
     document_list = []
     for result in results:
-        document_list.append(result[0])
+        document_list.append({result[0]:result[1]})
 
     return jsonify(document_list)
 
