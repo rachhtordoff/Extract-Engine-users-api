@@ -23,18 +23,24 @@ class UserTests(unittest.TestCase):
                                         content_type='application/json')
             self.assertEqual(response.status_code, 201)
             data = json.loads(response.data.decode())
+            print(response.text)
+            print(data)
             self.assertIn("User created!", data["message"])
 
 
-@patch.object(UserService, 'create_user')
-def test_register_user_with_mock(self, mock_create_user):
-    mock_create_user.return_value = None
+    @patch.object(UserService, 'create_user')
+    def test_register_user_with_mock(self, mock_create_user):
+        mock_create_user.return_value = None
 
-    with self.client:
-        response = self.client.post('/register',
-                                    data=json.dumps({"email": "test@example.com", "password": "testpass",
-                                                     'fullname': 'usernametest'}),
-                                    content_type='application/json')
-        self.assertEqual(response.status_code, 201)
-        data = json.loads(response.data.decode())
-        self.assertIn("User created!", data["message"])
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess['email'] = 'john@example.com'
+                sess['access_token'] = 'dummy_access_token'
+
+                response = c.post('/register',
+                                            data=json.dumps({"email": "test@example.com", "password": "testpass",
+                                                            'fullname': 'usernametest'}),
+                                            content_type='application/json')
+                self.assertEqual(response.status_code, 201)
+                data = json.loads(response.data.decode())
+                self.assertIn("User created!", data["message"])
