@@ -43,9 +43,8 @@ def refresh():
     current_user = get_jwt_identity()
     if not current_user:
         return jsonify({"message": "Unable to extract user identity."}), 401
-    
+
     try:
-        # Assuming create_tokens returns a tuple with the access token as the first element
         new_access_token = TokenService.create_tokens(current_user)[0]
         if not new_access_token:
             raise ValueError("Failed to create a new token.")
@@ -53,7 +52,7 @@ def refresh():
     except ValueError as e:
         return jsonify({"message": str(e)}), 401
     except Exception as e:
-        # Catch other unexpected errors (use this wisely and try to have specific exceptions where possible)
+        # Catch other unexpected errors
         return jsonify({"message": "An unexpected error occurred.", "details": str(e)}), 500
 
 
@@ -77,10 +76,10 @@ def login():
 @user.route('/get_document_list/<folder_id>', methods=['GET'])
 def get_document_list(folder_id):
     results = UserService.get_document_names(folder_id)
-    
+
     document_list = []
     for result in results:
-        document_list.append({result[0]:result[1]})
+        document_list.append({result[0]: result[1]})
 
     return jsonify(document_list)
 
@@ -96,17 +95,15 @@ def new_extract():
     data = request.json
     try:
         get_extract = ExtractService.create_extract(data)
-        
-        # If get_extract is a list, convert each item to JSON serializable format.
-        if isinstance(get_extract, list):  
+
+        if isinstance(get_extract, list):
             return jsonify([item.to_json() for item in get_extract])
-        
-        # If it's a single object, convert it to JSON serializable format.
-        return jsonify(get_extract.to_json())  
+
+        return jsonify(get_extract.to_json())
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
     except AttributeError as e:
         return jsonify({"message": "Attribute error occurred.", "details": str(e)}), 500
     except Exception as e:
-        # Generic exception for unexpected errors (optional and use it wisely).
+        # Generic exception for unexpected errors
         return jsonify({"message": "An unexpected error occurred.", "details": str(e)}), 500

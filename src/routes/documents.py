@@ -21,6 +21,7 @@ def new_bucket(folder_id):
 
     return 'done'
 
+
 @documents.route("/post_document_extract/<folder_id>", methods=['POST'])
 @jwt_required()
 def post_document_extract(folder_id):
@@ -69,13 +70,13 @@ def get_documents():
         if not json_data:
             return jsonify({"error": "Missing JSON data"}), 400
         doc_names = json_data
-        # Ensure doc_names is a list
+        # if doc_names is a list
         if not isinstance(doc_names, list):
             return jsonify({"error": "doc_names should be a list"}), 400
-        
+
         url_list = aws_service.get_documents(doc_names)
-        
+
         return jsonify({"urls": url_list})
-    
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500

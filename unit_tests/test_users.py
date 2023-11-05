@@ -18,15 +18,12 @@ class UserTests(unittest.TestCase):
     def test_register_user(self):
         with self.client:
             response = self.client.post('/register',
-                                        data=json.dumps({"email": "test@example.com", 'fullname': 'usernametest',
+                                        data=json.dumps({"email": "testtesttest@example.com", 'fullname': 'usernametest',
                                                          "password": "testpass"}),
                                         content_type='application/json')
             self.assertEqual(response.status_code, 201)
             data = json.loads(response.data.decode())
-            print(response.text)
-            print(data)
             self.assertIn("User created!", data["message"])
-
 
     @patch.object(UserService, 'create_user')
     def test_register_user_with_mock(self, mock_create_user):
@@ -37,10 +34,15 @@ class UserTests(unittest.TestCase):
                 sess['email'] = 'john@example.com'
                 sess['access_token'] = 'dummy_access_token'
 
-                response = c.post('/register',
-                                            data=json.dumps({"email": "test@example.com", "password": "testpass",
-                                                            'fullname': 'usernametest'}),
-                                            content_type='application/json')
-                self.assertEqual(response.status_code, 201)
-                data = json.loads(response.data.decode())
-                self.assertIn("User created!", data["message"])
+            response = c.post(
+                '/register',
+                data=json.dumps({
+                    'email': 'test@example.com',
+                    'password': 'testpass',
+                    'fullname': 'usernametest'
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(response.status_code, 201)
+            data = json.loads(response.data.decode())
+            self.assertIn('User created!', data['message'])
